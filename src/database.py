@@ -31,7 +31,22 @@ def criar_usuario(email, nome, senha):
         return False
     finally:
         conexao.close()
-
+def deletar_usuario(email):
+        
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+       
+    try:
+        # PREENCHA AQUI - QUAL O COMANDO DELETAR UM USUÁRIO
+        cursor.execute('DELETE FROM usuarios WHERE email = ?',
+                       (email, ))
+        conexao.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conexao.close()
+       
 def criar_projeto(id_usuario,destino,data_prevista,status,imagem,gastos,dinheiro_guardado):
     conexao = conectar_banco()
     cursor = conexao.cursor()
@@ -86,6 +101,53 @@ def mostrar_id_viagens (id_email):
         return False
     finally:
         conexao.close()
+        
+def trocar_nome (nome, email):
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+    
+    try:
+        cursor.execute('Update usuarios SET nome = ?  WHERE email = ?', (nome, email,))
+        conexao.commit()
+        viagens = cursor.fetchall()
+        return viagens
+    
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conexao.close()
+        
+        
+def trocar_senha (senha, email):
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+    
+    try:
+        cursor.execute('Update usuarios SET senha = ?  WHERE email = ?', (senha, email,))
+        conexao.commit()
+        viagens = cursor.fetchall()
+        return viagens
+    
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conexao.close()
+        
+def editar_viagem (destino, data_prevista, status, imagem, gastos, dinheiro_guardado, id_usuario):
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+    
+    try:
+        cursor.execute('Update projetos_de_viagem SET data_prevista = ?  WHERE id_usuario = ?', (destino, data_prevista, status, imagem, gastos, dinheiro_guardado, id_usuario ))
+        conexao.commit()
+        viagens = cursor.fetchall()
+        return viagens
+    
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conexao.close()     
+        
 
 if __name__ == '__main__': 
     conexao = conectar_banco()
@@ -93,7 +155,19 @@ if __name__ == '__main__':
     id_viagens = mostrar_id_viagens("charuri@email.com")
     print(id_viagens)
 
-    apagar_viagem("1")
+    # apagar_viagem("1")
+    
+    # apagar_usuario ("Diemerson","charuri@email.com")
+    
+    # mudar_senha ("1243", "charuri@email.com")
+    
+    # apagar_viagem ("25/12/25", "charuri@email.com")
+    
+    editar_viagem ("EUA", "10/10/2026", "Em andamento", "?", "1.000", "2.000", "Diemerson")
+    
+    
+    
+    
     
 
 
